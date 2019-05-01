@@ -10,7 +10,9 @@ public class SoundManager : MonoBehaviour
     public AudioSource sourcePrefab;
     public AudioClip[] playerStep;
     public AudioClip[] background;
+    public Transform player;
 
+    Vector3 playerPos;
     int lastWalk;
 
     private void Awake()
@@ -29,11 +31,29 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        sources[0].clip = background[0];
+        sources[0].transform.position = player.position;
+        sources[0].Play();
+    }
+
+    private void Update()
+    {
+        sources[0].transform.position = player.position;//BGM
+        if (!sources[0].isPlaying)
+        {
+            sources[0].Play();
+        }
+    }
+
     public void PlayerWalkSound(Vector3 playerPosition)
     {
         int clipNum = GetRandom(playerStep.Length, lastWalk);
         lastWalk = PlaySound(playerStep, clipNum,playerPosition);
     }
+
+
 
     int PlaySound(AudioClip[] clips, int clipNum, Vector3 pos)
     {
@@ -47,7 +67,7 @@ public class SoundManager : MonoBehaviour
 
     AudioSource GetSource()
     {
-        for (int i = 0; i < maxAudioSources; i++)
+        for (int i = 2; i < maxAudioSources; i++)//first 2 is for bgm
         {
             if (!sources[i].isPlaying)
             {
